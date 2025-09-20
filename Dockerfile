@@ -1,15 +1,21 @@
 # Stage 1: build
-FROM node:22-alpine AS build
+FROM node:22 AS build
 WORKDIR /app
+
+# 复制 package.json 和 package-lock.json
 COPY package*.json ./
-RUN npm install --unsafe-perm
-# 给 bin 文件夹递归加执行权限
-RUN chmod -R +x ./node_modules/.bin
+
+# 安装依赖
+RUN npm install
+
+# 复制项目文件
 COPY . .
-RUN npx vite build
+
+# 构建前端
+RUN npm run build
 
 # Stage 2: serve with nginx
-FROM nginx:stable-alpine
+FROM nginx:stable
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
