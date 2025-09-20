@@ -1,7 +1,13 @@
 <template>
   <div>
     <h3>设备列表</h3>
-    <el-table :data="devices" v-loading="loading" style="width:100%">
+
+    <!-- 表格 -->
+    <el-table
+      :data="pagedDevices"
+      v-loading="loading"
+      style="width:100%"
+    >
       <el-table-column label="设备信息">
         <template #default="{ row }">
           <div>
@@ -41,7 +47,7 @@
         <template #default="{ row }">
           <el-button size="small" type="danger" @click="deleteDevice(row.id)">删除用户</el-button>
           <el-button size="small" type="primary" @click="startSending(row)">开始群发</el-button>
-          <div v-if="row.sending" style="margin-top:4px;">
+          <div v-if="row.sending" class="timer">
             <span>倒计时：{{ row.countdown }}s</span>
             <el-button size="mini" @click="pause(row)">暂停</el-button>
             <el-button size="mini" @click="resume(row)">继续</el-button>
@@ -50,11 +56,23 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      :total="devices.length"
+      @current-change="handlePageChange"
+      style="margin-top: 12px; text-align: right;"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import http from '@/api/http'
 
 interface Device {
@@ -74,6 +92,18 @@ interface Device {
 
 const devices = ref<Device[]>([])
 const loading = ref(false)
+
+// 分页
+const currentPage = ref(1)
+const pageSize = ref(10)
+const pagedDevices = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return devices.value.slice(start, end)
+})
+function handlePageChange(page: number) {
+  currentPage.value = page
+}
 
 function deleteDevice(id: string) {
   devices.value = devices.value.filter(d => d.id !== id)
@@ -108,7 +138,6 @@ function resume(row: Device) {
 }
 
 onMounted(async () => {
-  // 两条测试数据
   devices.value = [
     {
       id: 'D001',
@@ -134,7 +163,6 @@ onMounted(async () => {
     }
   ]
 
-  // 同时从后端获取真实数据
   try {
     loading.value = true
     const res = await http.get('/devices')
@@ -146,8 +174,8 @@ onMounted(async () => {
   }
 })
 </script>
+
 <style scoped>
-/* 表格整体半透明卡片风格 */
 .el-table {
   background: rgba(121, 202, 198, 0.85);
   box-shadow: 0 8px 32px rgba(17, 26, 150, 0.2);
@@ -156,26 +184,17 @@ onMounted(async () => {
   border-radius: 12px;
 }
 
-/* 表头字体加粗，背景透明 */
 .el-table th {
   font-weight: bold;
   background: transparent;
   color: #000;
 }
 
-/* 表格行字体加粗，背景透明 */
 .el-table td {
   font-weight: bold;
   background: transparent;
 }
 
-/* 设备信息和数量列里面内容加竖线 */
-.device-info span,
-.device-count span {
-  margin-right: 8px;
-}
-
-/* 倒计时按钮区样式 */
 .timer {
   margin-top: 4px;
 }
