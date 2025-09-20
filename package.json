@@ -11,7 +11,7 @@
     "element-plus": "^2.3.9",
     "vue": "^3.3.4",
     "vue-router": "^4.5.1",
-    "vite": "^5.4.20"           // <-- 放在这里
+    "vite": "^5.4.20"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
