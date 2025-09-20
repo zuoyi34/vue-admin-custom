@@ -6,7 +6,7 @@ RUN npm install --unsafe-perm
 # 给 bin 文件夹递归加执行权限
 RUN chmod -R +x ./node_modules/.bin
 COPY . .
-RUN npm run build
+RUN npx vite build
 
 # Stage 2: serve with nginx
 FROM nginx:stable-alpine
