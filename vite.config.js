@@ -8,5 +8,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  server: {
+    port: 5173 // 本地开发服务器端口改为 5173
   }
 })
