@@ -3,8 +3,11 @@ FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+# 安装 vite 全局
+RUN npm install -g vite
 COPY . .
-RUN npm run build
+# 使用全局 vite 进行构建
+RUN vite build
 
 # Stage 2: serve with nginx
 FROM nginx:stable-alpine
