@@ -2,9 +2,9 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
-# 给 bin 文件加执行权限
-RUN chmod +x ./node_modules/.bin/*
+RUN npm install --unsafe-perm
+# 给 bin 文件夹递归加执行权限
+RUN chmod -R +x ./node_modules/.bin
 COPY . .
 RUN npm run build
 
