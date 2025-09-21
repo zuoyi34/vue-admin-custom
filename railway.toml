@@ -1,0 +1,12 @@
+# railway.toml
+
+[build]
+  # 运行 build 命令
+  command = "npm run build"
+
+[deploy]
+  # 启动命令
+  command = "npm start"
+
+[env]
+  PORT = "3000"
