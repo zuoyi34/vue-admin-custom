@@ -13,10 +13,11 @@ server {
         try_files $uri /index.html;
     }
 
-    location /api/ {
-        proxy_pass https://mybackend1-production.up.railway.app/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
+    # 前端请求 /api/ 开头的，转发到后端根地址，同时把 /api/ 去掉
+location /api/ {
+    proxy_pass https://mybackend1-production.up.railway.app;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
 }
