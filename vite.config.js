@@ -10,6 +10,8 @@ export default defineConfig({
     }
   },
   server: {
-    port: 5173 // 本地开发服务器端口改为 5173
-  }
+    host: true,
+    port: 5173
+  },
+  base: '/'  // ✅ Railway 是部署在根路径
 })
